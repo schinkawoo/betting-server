@@ -79,41 +79,49 @@ var getPrediction = (request, response) => {
 
 app.get('/group-phase/matches/:id', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getMatch(request, response)
 });
 
 app.get('/knockout-phase/matches/:id', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getMatch(request, response)
 });
 
 app.get('/group-phase/matches/', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getMatches(request, response);
 });
 
 app.get('/knockout-phase/matches/', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getMatches(request, response);
 });
 
 app.get('/group-phase/predictions/', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getPredictions(request, response);
 });
 
 app.get('/knockout-phase/predictions/', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getPredictions(request, response);
 });
 
 app.get('/group-phase/predictions/:id', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getPrediction(request, response);
 });
 
 app.get('/knockout-phase/predictions/:id', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
     getPrediction(request, response);
 });
 
