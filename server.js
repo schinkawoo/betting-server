@@ -91,6 +91,25 @@ var getPrediction = (request, response) => {
     })));
 }
 
+var getAllPredictions = (request, response) => {
+    var predictions = {};
+    const predictionDirs = ["/data/group-phase/predictions/", "/data/knockout-phase/predictions/"].map(dir => __dirname + dir);
+    
+    predictionDirs.forEach((predictionDir) => {
+        var predictionFiles = fs.readdirSync(predictionDir);
+        predictionFiles.forEach((fileName)=>{
+            var key = fileName.split(".")[0];
+            const newPredictions = JSON.parse(fs.readFileSync(predictionDir + fileName, 'utf8',(err, data) => {
+                return data;
+            }));
+
+            predictions[key] = (predictions[key] ? predictions[key] : []).concat(newPredictions);
+        });
+    });
+
+    response.send(JSON.stringify(predictions));
+}
+
 app.get('/group-phase/matches/:id', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
     response.header("Content-Type", "application/json");
@@ -145,45 +164,11 @@ app.get('/matches', function (request, response) {
     getAllMatches(request, response);
 });
 
-// app.get('/raw-data/', function (request, response) {
-//     var matches = JSON.parse(fs.readFileSync( __dirname + "/data/knockout-phase/" + "matches.json", 'utf8', function (err, data) {
-//         return data;
-//     }));
-//
-//     console.log(matches)
-//
-//     var rawDataPath = __dirname + "/data/knockout-phase/" + "mappedData.json";
-//     fs.readFile(rawDataPath, 'utf8', function (err, data) {
-//         var mappedData = JSON.parse(data);
-//         var predictorNames = Object.keys(mappedData["8693520"]).filter((key)=>key != "HOME" && key != "AWAY" &&key != "prediction" &&key != "round");
-//         var predictions = {};
-//         predictorNames.forEach((predictorName)=>{
-//             var fileData = matches.map((match)=>{
-//                 return {
-//                     "type":"match",
-//                     "match": {
-//                         "esc_id": match.esc_id,
-//                         "id": match.id,
-//                         "HOME": mappedData[match.id].HOME,
-//                         "AWAY": mappedData[match.id].AWAY
-//                     },
-//                     "prediction": mappedData[match.id][predictorName]
-//
-//                 }
-//             });
-//             var fileName = __dirname + "/data/knockout-phase/predictions/" + predictorName.toLowerCase() + ".json";
-//             fs.writeFile(fileName, JSON.stringify(fileData), "utf8", (err)=>{
-//                 if(err){
-//                     return console.log(err);
-//                 }
-//             });
-//         });
-//
-//
-//
-//         response.send(JSON.stringify("HA HA"));
-//     });
-// });
+app.get('/predictions', function (request, response) {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
+    getAllPredictions(request, response);
+});
 
 app.listen(process.env.PORT || 3000, function () {
     console.log('Example app listening on port 3000!');
