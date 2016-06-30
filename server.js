@@ -40,6 +40,20 @@ var getMatches = (request, response) => {
     });
 };
 
+var getAllMatches = (request, response) => {
+    var result = [];
+
+    const matchesFiles = ["/data/group-phase/matches.json", "/data/knockout-phase/matches.json"];
+
+    matchesFiles.forEach((matchesFile) => {
+        result = result.concat(JSON.parse(fs.readFileSync(__dirname + matchesFile, 'utf8',(err, data) => {
+            return data;
+        })));
+    });
+
+    response.send(JSON.stringify(result));
+}
+
 var getPredictions = (request, response) => {
     var predictionDir = __dirname + "/data/"+request.path.split("/")[1]+"/predictions/";
     var predictionFiles = fs.readdirSync(predictionDir);
@@ -123,6 +137,12 @@ app.get('/knockout-phase/predictions/:id', function (request, response) {
     response.header('Access-Control-Allow-Origin', '*');
     response.header("Content-Type", "application/json");
     getPrediction(request, response);
+});
+
+app.get('/matches', function (request, response) {
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header("Content-Type", "application/json");
+    getAllMatches(request, response);
 });
 
 // app.get('/raw-data/', function (request, response) {
